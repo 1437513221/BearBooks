@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    android:background="#8000">
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/category_text"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_weight="2"
+        android:text="餐饮"
+        android:textColor="#fff" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="4"
+        android:id="@+id/journal_date_text"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="#fff"
+        android:text="时间"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="6"
+        android:id="@+id/journal_info_text"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="#fff"
+        android:text="备注"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/type_text"
+        android:layout_weight="1"
+        android:gravity="right"
+        android:layout_gravity="center"
+        android:text="+"
+        android:textColor="#fff" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/amount_text"
+        android:layout_weight="2"
+        android:gravity="left"
+        android:layout_gravity="center"
+        android:text="15"
+        android:textColor="#fff" />
+</LinearLayout>

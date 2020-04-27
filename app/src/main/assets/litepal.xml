@@ -1,0 +1,9 @@
+<litepal>
+    <dbname value="BearBooks"/>
+    <version value="1"/>
+    <list>
+        <mapping class="com.xiong.bearbooks.db.Category"/>
+        <mapping class="com.xiong.bearbooks.db.Journal"/>
+        <mapping class="com.xiong.bearbooks.db.Book"/>
+    </list>
+</litepal>
