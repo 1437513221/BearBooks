@@ -168,7 +168,7 @@ public class AddJournalActivity extends AppCompatActivity {
                         journal.setType(1);
                     }else {
                         journal.setType(2);}
-                    journal.setAmount(Double.parseDouble(newJournal_amount_edit.getText().toString()));
+                    journal.setAmount((int) Double.parseDouble(newJournal_amount_edit.getText().toString()));
                     journal.save();
                     Util.sysJournal();
                     Intent intent=new Intent(AddJournalActivity.this, BookActivity.class);

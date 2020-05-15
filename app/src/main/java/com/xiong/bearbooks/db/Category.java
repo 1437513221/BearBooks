@@ -8,7 +8,9 @@ public class Category extends DataSupport {
     private int categoryId;
 
     private String name;
+
     private int icon;
+
     private boolean canDel;
 
     public int getCategoryId() {

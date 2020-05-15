@@ -9,7 +9,10 @@ import android.widget.TextView;
 
 import com.xiong.bearbooks.R;
 import com.xiong.bearbooks.db.Book;
+import com.xiong.bearbooks.db.Journal;
 import com.xiong.bearbooks.util.Tools;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -37,5 +40,6 @@ public class BookAdapter extends ArrayAdapter<Book> {
         book_remaining_text.setText(Tools.findRemainingAmount(book.getBookId()));
         return view;
     }
+
 
 }

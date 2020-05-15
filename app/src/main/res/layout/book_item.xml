@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="10dp"
     android:background="#8000">
     <LinearLayout
@@ -12,19 +12,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/book_name_text"
-            android:text="生活账本"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="预算："
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/book_amount_text"
-            android:text="1000"
-            android:textSize="20sp"/>
+            android:textSize="16sp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -32,14 +30,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="剩余预算："/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:id="@+id/book_remaining_text"
-            android:text="900"/>
+            android:textSize="16sp"
+            android:id="@+id/book_remaining_text" />
     </LinearLayout>
 
 

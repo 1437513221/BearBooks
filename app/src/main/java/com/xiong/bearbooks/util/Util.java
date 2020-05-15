@@ -19,9 +19,9 @@ public class Util {
         SharedPreferences preferences= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         boolean initialize=preferences.getBoolean("initialize",false);
         if (initialize==false){
-            Tools.addBook("生活", 1000, false, 1);
-            Tools.addBook("旅游", 10000, false, 2);
-            Tools.addBook("结婚", 30000, false, 3);
+            Tools.addBook("生活", 1000, false, 1,"2020-03-27");
+            Tools.addBook("旅游", 10000, false, 2,"2020-04-15");
+            Tools.addBook("结婚", 30000, false, 3,"2020-04-20");
 
             Tools.addCategory("衣服", 1, false);
             Tools.addCategory("餐饮", 2, false);
@@ -32,10 +32,10 @@ public class Util {
 
             try {
                 Tools.addJournal(1, 200, 1, "买鞋子", "2020-3-10 09:20", 1);
-                Tools.addJournal( 2,50.9, 2, "吃海鲜", "2020-3-20 10:20", 1);
+                Tools.addJournal( 2,50, 2, "吃海鲜", "2020-3-20 10:20", 1);
                 Tools.addJournal(3, 10, 2, "坐火车", "2020-3-21 13:10", 1);
-                Tools.addJournal(6, 120.5, 3, "买衣服", "2020-4-10 09:20", 1);
-                Tools.addJournal(5, 3001, 1, "换手机", "2020-4-10 08:20", 1);
+                Tools.addJournal(6, 120, 3, "买衣服", "2020-4-10 09:20", 1);
+                Tools.addJournal(5, 2000, 1, "换手机", "2020-4-10 08:20", 1);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -47,24 +47,23 @@ public class Util {
     //同步数据库信息
     public static void synBook(){
          MyDatabaseHelper dbHelper;
-        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,1);
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,2);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("update book set bookid=id");
 
     }
     public static void sysJournal(){
         MyDatabaseHelper dbHelper;
-        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,1);
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,2);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("update journal set journalid=id");
 
     }
     public static void sysCategory(){
         MyDatabaseHelper dbHelper;
-        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,1);
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,2);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("update category set categoryid=id");
-
     }
 
 }

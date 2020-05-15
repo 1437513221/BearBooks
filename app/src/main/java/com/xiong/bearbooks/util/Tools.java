@@ -17,12 +17,18 @@ import java.text.SimpleDateFormat;
 
 public class Tools {
     //添加账本数据
-    public static void addBook(String name,double amount,boolean canDel,int cycle){
+    public static void addBook(String name,int amount,boolean canDel,int cycle,String date){
         Book book=new Book();
         book.setName(name);
         book.setAmount(amount);
         book.setCanDel(canDel);
         book.setCycle(cycle);
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            book.setSetCycleDate(simpleDateFormat.parse(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         book.save();
     }
 
@@ -36,7 +42,7 @@ public class Tools {
     }
 
     //添加流水账数据
-    public static void addJournal(int categoryId, double amount, int bookId, String info, String date,int type) throws ParseException {
+    public static void addJournal(int categoryId, int amount, int bookId, String info, String date,int type) throws ParseException {
         Journal journal=new Journal();
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");//按照格式传入String类型数据，不然添加不进去
         journal.setCategoryId(categoryId);
@@ -48,10 +54,10 @@ public class Tools {
         journal.save();
     }
 
-    //根据id查找账本的剩余额度
+    //根据bookId查找剩余额度
     public static String findRemainingAmount(int bookId){
-        double result= DataSupport.where("bookId=? and type=?", String.valueOf(bookId), "1").sum(Journal.class,"amount",double.class);
-        double result2=DataSupport.where("bookId=?", String.valueOf(bookId)).sum(Book.class,"amount",double.class);
+        int result= DataSupport.where("bookId=? and type=?", String.valueOf(bookId), "1").sum(Journal.class,"amount",Integer.class);
+        int result2=DataSupport.where("bookId=?", String.valueOf(bookId)).sum(Book.class,"amount",Integer.class);
         return String.valueOf(result2-result);
     }
 }

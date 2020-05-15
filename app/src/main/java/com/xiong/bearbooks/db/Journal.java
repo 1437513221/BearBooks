@@ -12,7 +12,7 @@ public class Journal extends DataSupport {
     @Column(nullable = false)
     private int  categoryId;
 
-    private double amount;
+    private int amount;
 
     @Column(nullable = false)
     private int bookId;//不同的id不同的账本 从 1 开始
@@ -39,11 +39,11 @@ public class Journal extends DataSupport {
         this.categoryId = categoryId;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 

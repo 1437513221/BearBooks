@@ -5,7 +5,9 @@ package com.xiong.bearbooks;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -194,11 +196,19 @@ public class ModifyJournalActivity extends AppCompatActivity {
                         journal.setType(1);
                     }else {
                         journal.setType(2);}
-                    journal.setAmount(Double.parseDouble(modify_amount_edit.getText().toString()));
+                    journal.setAmount((int) Double.parseDouble(modify_amount_edit.getText().toString()));
                     journal.updateAll("id=?", String.valueOf(journalId));
-                    Intent intent =new Intent(ModifyJournalActivity.this, BookActivity.class);
-                    startActivity(intent);
-                    finish();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+                    int updateJournalId = preferences.getInt("updateJournalId", 1);
+                    if (updateJournalId==1){
+                        Intent intent=new Intent(ModifyJournalActivity.this,BookActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }else {
+                        Intent intent=new Intent(ModifyJournalActivity.this,MoreJournalsActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
                 }
             }
         });

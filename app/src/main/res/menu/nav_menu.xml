@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_addCategory"
+            android:title="添加账目类型"
+            android:icon="@drawable/ic_playlist_add_black_24dp">
+        </item>
+        <item
+            android:id="@+id/nav_statements"
+            android:title="查看账单报表"
+            android:icon="@drawable/ic_description_black_24dp">
+        </item>
+        <item
+            android:id="@+id/nav_userInfo"
+            android:title="修改用户信息"
+            android:icon="@drawable/ic_person_outline_black_24dp">
+        </item>
+    </group>
+</menu>

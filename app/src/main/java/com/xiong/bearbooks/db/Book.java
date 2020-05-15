@@ -3,6 +3,8 @@ package com.xiong.bearbooks.db;
 import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
+import java.util.Date;
+
 public class Book extends DataSupport {
     @Column(defaultValue = "0")
     private int bookId;
@@ -10,10 +12,21 @@ public class Book extends DataSupport {
     @Column(unique = true)
     private String name;
 
-    private double amount;
+    private int amount;
 
     private boolean canDel;
+
+    private Date setCycleDate;
+
     private int cycle;//计算周期 从1开始 1是月 2是年 3是一次性
+
+    public Date getSetCycleDate() {
+        return setCycleDate;
+    }
+
+    public void setSetCycleDate(Date setCycleDate) {
+        this.setCycleDate = setCycleDate;
+    }
 
     public int getBookId() {
         return bookId;
@@ -31,11 +44,11 @@ public class Book extends DataSupport {
         this.name = name;
     }
 
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 

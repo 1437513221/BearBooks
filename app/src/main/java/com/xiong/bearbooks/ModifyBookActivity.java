@@ -1,10 +1,12 @@
 package com.xiong.bearbooks;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +29,10 @@ import com.xiong.bearbooks.db.Journal;
 
 import org.litepal.crud.DataSupport;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -40,6 +47,8 @@ public class ModifyBookActivity extends AppCompatActivity {
     private Book book;
     private ArrayAdapter<String> canDelAdapter;
     private ArrayAdapter<String> cycleAdapter;
+    private TextView newBookCycleDate_text;
+    private int mYear,mMonth,mDay;
 //    private int bookId;
 
     @Override
@@ -76,40 +85,36 @@ public class ModifyBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_book);
         modify_book_toolbar= (Toolbar) findViewById(R.id.modify_book_toolbar);
-        TextView old_name_text = (TextView) findViewById(R.id.old_name_text);
         new_name_edit = (EditText) findViewById(R.id.new_name_edit);
-        TextView old_amount_text = (TextView) findViewById(R.id.old_amount_text);
         new_amount_edit = (EditText) findViewById(R.id.newBookAmount_edit);
-        TextView old_canDel_text = (TextView) findViewById(R.id.old_canDel_text);
-        TextView old_cycle_text = (TextView) findViewById(R.id.old_cycle_text);
-        Button submit_button = (Button) findViewById(R.id.submit_button);
-        Button back_button = (Button) findViewById(R.id.back_button);
         canDel_spinner = (Spinner) findViewById(R.id.canDel_spinner);
         cycle_spinner = (Spinner) findViewById(R.id.newBookCycle_spinner);
-        final String[] canDel = new String[]{"能", "不能"};
+        newBookCycleDate_text=findViewById(R.id.newBookCycleDate_text);
+        Button submit_button = (Button) findViewById(R.id.submit_button);
+        Button back_button = (Button) findViewById(R.id.back_button);
+
+        final String[] canDel = new String[]{"不能", "能"};
         final String[] cycle = new String[]{"月", "年", "永久"};
         setSupportActionBar(modify_book_toolbar);
         canDelAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, canDel);
         canDelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        canDel_spinner.setAdapter(canDelAdapter);
+
         cycleAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, cycle);
         cycleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        canDel_spinner.setAdapter(canDelAdapter);
         cycle_spinner.setAdapter(cycleAdapter);
         getBook();
-        old_name_text.setText(book.getName());
-        old_amount_text.setText(String.valueOf(book.getAmount()));
-        if (book.isCanDel() == true) {
-            old_canDel_text.setText("是");
+        new_name_edit.setText(book.getName());
+        new_amount_edit.setText(String.valueOf((int) book.getAmount()));
+        final SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+        newBookCycleDate_text.setText(simpleDateFormat.format(book.getSetCycleDate()));
+        if (book.isCanDel() == false) {
+            canDel_spinner.setSelection(0);
         } else {
-            old_canDel_text.setText("否");
+            canDel_spinner.setSelection(1);
         }
-        if (book.getCycle() == 1) {
-            old_cycle_text.setText("月");
-        } else if (book.getCycle() == 2) {
-            old_cycle_text.setText("年");
-        } else {
-            old_cycle_text.setText("永久");
-        }
+        cycle_spinner.setSelection(book.getCycle()-1);
+
         canDel_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -121,6 +126,36 @@ public class ModifyBookActivity extends AppCompatActivity {
 
             }
         });
+
+//        newBookCycleDate_text.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(ModifyBookActivity.this);
+//                View view = View.inflate(ModifyBookActivity.this, R.layout.date_time_dialog2, null);
+//                final DatePicker datePicker = (DatePicker) view.findViewById(R.id.date_picker);
+//                builder.setView(view);
+//
+//                Calendar cal = Calendar.getInstance();
+//                cal.setTime(new Date());
+//                datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
+//                if (v.getId()== R.id.newBookCycleDate_text){
+//                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            mYear=datePicker.getYear();
+//                            mMonth=datePicker.getMonth()+1;
+//                            mDay=datePicker.getDayOfMonth();
+//                            String s=mYear+"-"+mMonth+"-"+mDay;
+//                            newBookCycleDate_text.setText(s);
+//                            dialog.cancel();
+//                        }
+//                    });
+//                }
+//                Dialog dialog=builder.create();
+//                dialog.show();
+//            }
+//        });
+
         cycle_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -135,19 +170,26 @@ public class ModifyBookActivity extends AppCompatActivity {
         submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (recheck(new_name_edit.getText().toString())==false){
-                    Toast.makeText(ModifyBookActivity.this,"该帐本已存在，请重新输入",Toast.LENGTH_SHORT).show();
+                if (new_name_edit.getText().toString().equals("")){
+                    Toast.makeText(ModifyBookActivity.this,"同学，账本名你给忘了",Toast.LENGTH_SHORT).show();
                 }else if (new_amount_edit.getText().toString().equals("")){
-                    Toast.makeText(ModifyBookActivity.this,"预算金额未输入",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ModifyBookActivity.this,"同学，预算金额未输入",Toast.LENGTH_SHORT).show();
                 }else {
                     Book book = new Book();
                     book.setName(new_name_edit.getText().toString());
                     book.setAmount(Integer.parseInt(new_amount_edit.getText().toString()));
+                    try {
+                        book.setSetCycleDate(simpleDateFormat.parse(newBookCycleDate_text.getText().toString()
+                        ));
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                     if (canDel_spinner_result.equals("不能")) {
-                        book.setCanDel(false);
-                    } else {
+                        book.setToDefault("canDel");
+                    } else{
                         book.setCanDel(true);
                     }
+
                     if (cycle_spinner_result.equals("月")) {
                         book.setCycle(1);
                     } else if (cycle_spinner_result.equals("年")) {

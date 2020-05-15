@@ -25,6 +25,21 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <include layout="@layout/total_info"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:id="@+id/moreJournals_layout"
+                    android:layout_marginTop="8dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="该周期部分账单如下，点击查看更多"/>
+                </LinearLayout>
+
+
                 <ListView
                     android:id="@+id/journal_listView"
                     android:layout_width="match_parent"
@@ -42,15 +57,6 @@
             fab:fab_icon="@drawable/ic_add_black_24dp"
             fab:fab_labelStyle="@style/menu_labels_style"
             fab:fab_labelsPosition="left">
-
-            <com.getbase.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/fab_1"
-                fab:fab_colorNormal="@color/colorAccent"
-                fab:fab_size="mini"
-                fab:fab_icon="@drawable/ic_book_black_24dp"
-                fab:fab_title="添加新账本"/>
             <com.getbase.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,6 +73,14 @@
                 fab:fab_size="mini"
                 fab:fab_icon="@drawable/ic_mode_edit_black_24dp"
                 fab:fab_title="识图记账"/>
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fab_1"
+                fab:fab_colorNormal="@color/colorAccent"
+                fab:fab_size="mini"
+                fab:fab_icon="@drawable/ic_book_black_24dp"
+                fab:fab_title="添加新账本"/>
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 
@@ -84,22 +98,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/welcome_layout"
             android:padding="10dp"
             android:gravity="center">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="西瓜"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="用户，你好"/>
+                android:id="@+id/welcome_text"
+                android:gravity="center" />
         </LinearLayout>
         <ListView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:id="@+id/book_listView"
             android:layout_margin="15dp">
         </ListView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:orientation="vertical">
+            <com.google.android.material.navigation.NavigationView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/nav_view"
+                app:menu="@menu/nav_menu"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
