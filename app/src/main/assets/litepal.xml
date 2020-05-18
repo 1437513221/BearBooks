@@ -1,6 +1,6 @@
 <litepal>
     <dbname value="BearBooks"/>
-    <version value="2"/>
+    <version value="4"/>
     <list>
         <mapping class="com.xiong.bearbooks.db.Category"/>
         <mapping class="com.xiong.bearbooks.db.Journal"/>

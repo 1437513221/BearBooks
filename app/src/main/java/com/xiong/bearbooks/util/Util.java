@@ -47,23 +47,30 @@ public class Util {
     //同步数据库信息
     public static void synBook(){
          MyDatabaseHelper dbHelper;
-        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,2);
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("update book set bookid=id");
 
     }
     public static void sysJournal(){
         MyDatabaseHelper dbHelper;
-        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,2);
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("update journal set journalid=id");
 
     }
     public static void sysCategory(){
         MyDatabaseHelper dbHelper;
-        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,2);
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,4);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("update category set categoryid=id");
+    }
+
+    public static void sysUser(){
+        MyDatabaseHelper dbHelper;
+        dbHelper=new MyDatabaseHelper(MyApplication.getContext(),"BearBooks.db",null,4);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("update user set userid=id");
     }
 
 }

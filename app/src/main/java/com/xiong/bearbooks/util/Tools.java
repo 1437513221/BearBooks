@@ -1,5 +1,7 @@
 package com.xiong.bearbooks.util;
 
+import android.util.Log;
+
 import com.xiong.bearbooks.db.Book;
 import com.xiong.bearbooks.db.Category;
 import com.xiong.bearbooks.db.Journal;
@@ -9,6 +11,8 @@ import org.litepal.crud.DataSupport;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -56,8 +60,56 @@ public class Tools {
 
     //根据bookId查找剩余额度
     public static String findRemainingAmount(int bookId){
-        int result= DataSupport.where("bookId=? and type=?", String.valueOf(bookId), "1").sum(Journal.class,"amount",Integer.class);
-        int result2=DataSupport.where("bookId=?", String.valueOf(bookId)).sum(Book.class,"amount",Integer.class);
-        return String.valueOf(result2-result);
+        Book book;
+        String beginTime;
+        String endTime;
+        long beginTimeInMillis;
+        long endTimeInMillis;
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar calendar1=Calendar.getInstance();
+        Calendar calendar2=Calendar.getInstance();
+        Calendar calendar3=Calendar.getInstance();
+        book = DataSupport.find(Book.class,bookId);
+        if(book.getCycle()==1){
+            calendar1.setTime(new Date());
+            beginTime=calendar1.get(Calendar.YEAR)+"-"+(calendar1.get(Calendar.MONTH)+1)+"-"+"1"+" "+"00"+":"+"00";
+            if (calendar1.get(Calendar.MONTH)==11){
+                endTime=(calendar1.get(Calendar.YEAR)+1)+"-"+"1"+"-"+"1"+" "+"00"+":"+"00";
+            }else {endTime=calendar1.get(Calendar.YEAR)+"-"+(calendar1.get(Calendar.MONTH)+2)+"-"+"1"+" "+"00"+":"+"00";}
+            try {
+                calendar2.setTime(simpleDateFormat.parse(beginTime));
+                calendar3.setTime(simpleDateFormat.parse(endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else if(book.getCycle()==2){
+            calendar1.setTime(new Date());
+            beginTime=calendar1.get(Calendar.YEAR)+"-"+"1"+"-"+"1"+" "+"00"+":"+"00";
+            endTime=(calendar1.get(Calendar.YEAR)+1)+"-"+"1"+"-"+"1"+" "+"00"+":"+"00";
+            try {
+                calendar2.setTime(simpleDateFormat.parse(beginTime));
+                calendar3.setTime(simpleDateFormat.parse(endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else {
+            beginTime="2020-1-1 00:00";
+            endTime="2029-1-1 00:00";
+            try {
+                calendar2.setTime(simpleDateFormat.parse(beginTime));
+                calendar3.setTime(simpleDateFormat.parse(endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d("beginTime", beginTime);
+        Log.d("endTime", endTime);
+
+        beginTimeInMillis=calendar2.getTimeInMillis();
+        endTimeInMillis=calendar3.getTimeInMillis();
+
+        int result2 = DataSupport.where("bookId=? and type=? and date>? and date<?", String.valueOf(bookId), "1",String.valueOf(beginTimeInMillis),String.valueOf(endTimeInMillis)).sum(Journal.class, "amount", Integer.class);
+
+        return String.valueOf(book.getAmount()-result2);
     }
 }

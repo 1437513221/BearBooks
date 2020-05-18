@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.xiong.bearbooks.db.Book;
 import com.xiong.bearbooks.db.Journal;
+import com.xiong.bearbooks.db.User;
 import com.xiong.bearbooks.util.Util;
 import com.xiong.bearbooks.view.BookAdapter;
 import com.xiong.bearbooks.view.JournalAdapter;
@@ -73,6 +76,27 @@ public class BookActivity extends AppCompatActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        welcome_layout=findViewById(R.id.welcome_layout);
+        welcome_text=findViewById(R.id.welcome_text);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(BookActivity.this);
+        loginState=preferences.getInt("loginState",0);
+        if (loginState==0){
+            welcome_text.setText("用户未登录，点击登陆");
+        }else {
+            User user=new User();
+            user=DataSupport.where("isCurrent=?","2").findFirst(User.class);
+            welcome_text.setText(user.getUserName()+"你好,欢迎使用小熊账本");
+        }
+        welcome_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(BookActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
         toolbar = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
         setSupportActionBar(toolbar);
@@ -98,6 +122,15 @@ public class BookActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        fab_3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BookActivity.this, OCRAddJournalActivity.class);
+                startActivity(intent);
+            }
+        });
+
         nav_view=findViewById(R.id.nav_view);
         nav_view.setCheckedItem(R.id.nav_addCategory);
         nav_view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -113,6 +146,13 @@ public class BookActivity extends AppCompatActivity {
                         Intent intent2=new Intent(BookActivity.this,StatementActivity.class);
                         startActivity(intent2);
                         break;
+                    case R.id.nav_userInfo:
+                        if (loginState==0){
+                            Toast.makeText(MyApplication.getContext(),"检测到未登录，请先登录",Toast.LENGTH_SHORT).show();
+                        }else {
+                            Intent intent3=new Intent(BookActivity.this,ModifyUserActivity.class);
+                            startActivity(intent3);
+                        }
                     default:
                         break;
                 }
@@ -186,20 +226,8 @@ public class BookActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+//登录逻辑
 
-        welcome_layout=findViewById(R.id.welcome_layout);
-        welcome_text=findViewById(R.id.welcome_text);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(BookActivity.this);
-        loginState=preferences.getInt("loginState",0);
-        if (loginState==0){
-            welcome_text.setText("用户未登录，点击登陆");
-        }
-        welcome_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     //获取Book列表充适配器
@@ -226,10 +254,54 @@ public class BookActivity extends AppCompatActivity {
 
     //
     private void getBook() {
+        String beginTime;
+        String endTime;
+        long beginTimeInMillis;
+        long endTimeInMillis;
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Calendar calendar1=Calendar.getInstance();
+        Calendar calendar2=Calendar.getInstance();
+        Calendar calendar3=Calendar.getInstance();
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int bookId = preferences.getInt("bookId", 1);
         book = DataSupport.find(Book.class,bookId);
-        spending_result = DataSupport.where("bookId=? and type=?", String.valueOf(bookId), "1").sum(Journal.class, "amount", Integer.class);
+        if(book.getCycle()==1){
+            calendar1.setTime(new Date());
+            beginTime=calendar1.get(Calendar.YEAR)+"-"+(calendar1.get(Calendar.MONTH)+1)+"-"+"1"+" "+"00"+":"+"00";
+            if (calendar1.get(Calendar.MONTH)==11){
+                endTime=(calendar1.get(Calendar.YEAR)+1)+"-"+"1"+"-"+"1"+" "+"00"+":"+"00";
+            }else {endTime=calendar1.get(Calendar.YEAR)+"-"+(calendar1.get(Calendar.MONTH)+2)+"-"+"1"+" "+"00"+":"+"00";}
+            try {
+                calendar2.setTime(simpleDateFormat.parse(beginTime));
+                calendar3.setTime(simpleDateFormat.parse(endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else if(book.getCycle()==2){
+            calendar1.setTime(new Date());
+            beginTime=calendar1.get(Calendar.YEAR)+"-"+"1"+"-"+"1"+" "+"00"+":"+"00";
+            endTime=(calendar1.get(Calendar.YEAR)+1)+"-"+"1"+"-"+"1"+" "+"00"+":"+"00";
+            try {
+                calendar2.setTime(simpleDateFormat.parse(beginTime));
+                calendar3.setTime(simpleDateFormat.parse(endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }else {
+            beginTime="2020-1-1 00:00";
+            endTime="2029-1-1 00:00";
+            try {
+                calendar2.setTime(simpleDateFormat.parse(beginTime));
+                calendar3.setTime(simpleDateFormat.parse(endTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        beginTimeInMillis=calendar2.getTimeInMillis();
+        endTimeInMillis=calendar3.getTimeInMillis();
+
+        spending_result = DataSupport.where("bookId=? and type=? and date>? and date<?", String.valueOf(bookId), "1",String.valueOf(beginTimeInMillis),String.valueOf(endTimeInMillis)).sum(Journal.class, "amount", Integer.class);
     }
 
 

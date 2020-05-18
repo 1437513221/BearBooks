@@ -150,7 +150,7 @@ public class AddJournalActivity extends AppCompatActivity {
         newJournal_submit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (newJournal_amount_edit.getText().equals("")){
+                if (newJournal_amount_edit.getText().toString().equals("")){
                     Toast.makeText(AddJournalActivity.this,"账单金额未输入",Toast.LENGTH_SHORT).show();
                 }else {
                     Journal journal=new Journal();
